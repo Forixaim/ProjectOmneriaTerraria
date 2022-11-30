@@ -1,0 +1,24 @@
+{
+	"TownNPCMood": {
+		"CosmonianCharlemagne": {
+			"Content": "Pretty cool here. Say, are you the person I asked for an audience?",
+			"NoHome": "I'm fine without a home, but one is always appreciated.",
+			"LoveSpace": "Rather quiet here, perfect for a secluded chat with you and me.",
+			"FarFromHome": "Well, it's rather far from here. Could you take me home?",
+			"DislikeCrowded": "People are people, but be aware. Too much people can be a compromise to privacy.",
+			"HateCrowded": "This place is like a city to me. It makes me glad that I can manage everybody."
+		}
+	},
+	"Dialogue": {
+		"CosmonianCharlemagne": {
+			"BrimstoneWitchDialogue": "{NPCName}'s flames are impressive indeed, the hellfire of the abyss should not be taken lightly. But my flames of the universe goes beyond. In other terms, I am much stronger, my flames burn hotter and brighter.",
+			"DemolitionistDialogue": "{NPCName} is the absolute expert in terms of blasting. He is a valuable resource if you want to manage your ore collecting journey.",
+			"MutantDialogue": "",
+			"DrunkPrincessDialogue": "As an empress, getting drunk often is not my cup of tea. Proper conduct is a must and therefore I never drink.",
+			"PrincessDialogue": "{NPCName} is a young prodigy. Born with a lot of potential and loved by everyone. One day, she can become just like me.",
+			"EridaniDialogue": "Eridani? Ah yes her! Something I know about her is that yes, she is similar in durability akin to me. But I have combat experience, treat me as a slightly more skilled starfarer. Also starfarers and cosmonians are not the same.",
+			"DevianttDielogue": "",
+			"": ""
+		}
+	}
+}
