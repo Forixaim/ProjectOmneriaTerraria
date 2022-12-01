@@ -15,7 +15,8 @@ namespace ProjectOmneriaTerraria.Projectiles
         public const int TotalDuration = 16;
 
         //Modded Boss Checkers
-        public Mod CalamityMod = ModLoader.GetMod("CalamityMod");
+        public static Mod CalamityMod;
+        public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
 
         // The "width" of the blade
         public float CollisionWidth => 10f * Projectile.scale;
@@ -134,6 +135,12 @@ namespace ProjectOmneriaTerraria.Projectiles
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            // Calamity Mod Support
+            ModNPC Calamitas = null;
+            if (CalamityMod != null)
+            {
+                Calamitas = CalamityMod.Find<ModNPC>("SupremeCalamitas");
+            }
             //stores the target defense
             int targetDefense = target.defense;
             //Makes every hit ignore defense
@@ -142,18 +149,20 @@ namespace ProjectOmneriaTerraria.Projectiles
             if (target.boss)
             {
                 //Deals triple damage to bosses
-                target.StrikeNPC(damage * 3, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
+                if (Calamitas != null && target.type == Calamitas.Type)
+                {
+                    //Deals 10000x damage to Calamitas
+                    target.StrikeNPC(damage * 10000, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
+                }
+                else
+                {
+                    target.StrikeNPC(damage * 3, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
+                }
             }
             //Checks if it's a Dungeon Guardian
             else if (target.type == NPCID.DungeonGuardian)
             {
                 //Deals 1000x damage to Dungeon Guardians
-                target.StrikeNPC(damage * 1000, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
-            }
-            //checks if Calamity's Supreme Calamitas Exists
-            else if (CalamityLoaded && target.type == ModLoader.GetMod("CalamityMod").Call(NPCType<"">()))
-            {
-                //Deals 1000x damage to Supreme Calamitas
                 target.StrikeNPC(damage * 1000, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
             }
             else
