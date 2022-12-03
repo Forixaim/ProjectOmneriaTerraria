@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "3lddhx9fUcLUO3jGmUgXvbQzwYGErRHan6ghUnGL1IuOLrtZBgqRN34jQnjyso8/Fe9ZXovc0ZZV29/fImoW8g==",
+  "dgSpecHash": "YnQClyACLU3uio8oogR0LNmIfd5q2+E0I5Udm99mAGkg2RGXgpFvfwFGLoNZIF5VpSBsEzIM2BIcBnmfNNJGoQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\thebe\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\ProjectOmneriaTerraria\\ProjectOmneriaTerraria.csproj",
+  "projectFilePath": "C:\\Users\\Matthew Chai School\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\ProjectOmneriaTerraria\\ProjectOmneriaTerraria.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\thebe\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
+    "C:\\Users\\Matthew Chai School\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
   ],
   "logs": []
 }

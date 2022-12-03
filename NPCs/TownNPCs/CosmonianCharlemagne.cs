@@ -15,7 +15,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		public static Mod CalamityMod;
 		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
 		public static Mod StarsAbove;
-        public bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
+		public bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
 		public static Mod Fargos;
 		public bool FargosCheck = ModLoader.TryGetMod("Fargowiltas", out Fargos);
 		public override void SetStaticDefaults()
@@ -42,8 +42,8 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			};
 		}
 		
-        
-        public override void SetDefaults()
+		
+		public override void SetDefaults()
 		{
 			NPC.townNPC = true;
 			NPC.friendly = true;
