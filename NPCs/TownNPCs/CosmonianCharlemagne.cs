@@ -1,4 +1,5 @@
 ﻿using IL.Terraria.Localization;
+using ProjectOmneriaTerraria.Items;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -11,8 +12,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 {
+	[AutoloadHead]
 	public class CosmonianCharlemagne : ModNPC
 	{
+		private static bool CalamitasFought = false;
+		private static bool ThingSaid = false;
+		private static bool CalamitasPreFightSaid = false;
+		private static bool TsukiyomiPreFightSaid = false;
 		public static Mod CalamityMod;
 		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
 		public static Mod StarsAbove;
@@ -64,7 +70,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			
 			if (!Main.dedServ)
 			{
-				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno");
+				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno.ogg");
 			}
 		}
 
@@ -72,17 +78,16 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		public override void AI()
 		{
 			//Always have the npc emit fire particles
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, 6f, default, default, 2f);
-
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, -60f, default, default, 2f);
+			//
 		}
+
+
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
-			if (NPC.downedBoss1)
-			{
-				return true;
-			}
-			return false;
+			return true;
 		}
+		
 		public override List<string> SetNPCNameList()
 		{
 			return new List<string>()
@@ -90,7 +95,6 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				"Charlemagne"
 			};
 		}
-		
 		
 		
 		//Make Charlemagne use her Laevateinn to defend herself
@@ -117,13 +121,15 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			ModNPC Mutant;
 			ModNPC Deviantt;
 			//An int version of the ModNPCs
-			int CalamitasInt;
-			int FabInt;
-			int PermafrostInt;
-			int MutantInt;
-			int DevianttInt;
+			int CalamitasInt = -1;
+			int FabInt = -1;
+			int PermafrostInt = -1;
+			int MutantInt = -1;
+			int DevianttInt = -1;
 			ModBuff EridaniBlessing;
 			ModBuff AsphodeneBlessing;
+			ModBuff EverlastingLight;
+			
 			
 			if (Fargos != null)
 			{
@@ -149,17 +155,24 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				CalamitasInt = NPC.FindFirstNPC(Calamitas.Type);
 				FabInt = NPC.FindFirstNPC(Fab.Type);
 				PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
-				if (CalamitasInt >= 0 && Main.rand.NextBool(4))
+				//check if player has Ashes of Calamity
+				if (player.HasItem(CalamityMod.Find<ModItem>("AshesofCalamity").Type) && !CalamitasPreFightSaid)
 				{
-					chat.Add(Main.npc[CalamitasInt].GivenName + "'s flames are impressive indeed, the hellfire of the abyss should not be taken lightly. But my flames of the universe goes beyond. In other terms, I am much stronger, my flames burn hotter and brighter.");
+					//Give the player Laevateinn
+					if (!TsukiyomiPreFightSaid)
+					{
+						var EntitySource = NPC.GetSource_GiftOrReward();
+						player.QuickSpawnItem(EntitySource, ModContent.ItemType<Laevateinn>());
+					}
+					
+					chat.Add("Those ashes... I see. You are about to engage onto a tough fight against the witch. I wish you luck. Here's the only thing I can do, here I've forged you a replica of my blade. Despite being a replica, the blade is extremely powerful. The cosmic inferno will be extremely effective against her. Use it well.", 1000);
+					CalamitasPreFightSaid = true;
 				}
-				if (FabInt >= 0 && Main.rand.NextBool(4))
+				if ((bool)CalamityMod.Call("GetBossDowned", "supremecalamitas") && !CalamitasFought)
 				{
-					chat.Add(Main.npc[FabInt].GivenName + "... as an empress, getting drunk often is not my cup of tea. Proper conduct is a must and therefore I never drink. If you are thinking of offering me a cup I may just ignite the alcohol within it and toss it into your face.");
-				}
-				if (PermafrostInt >= 0 && Main.rand.NextBool(4))
-				{
-					chat.Add("Hey, could you tell " + Main.npc[PermafrostInt].GivenName + " to stay away from me, I highly recommend 40 feet. Him getting near me may be way too warm for the archmage. Especially when I'm in combat when the air can skyrocket up to 7000 degrees kelvin.");
+					
+					chat.Add("You have defeated the witch, great work. I would like to personally speak to her as soon as I can. Who knows what we can get from each other.");
+					CalamitasFought = true;
 
 				}
 			}
@@ -168,9 +181,15 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			{
 				//Grab the world name
 				string worldName = Main.worldName;
-				chat.Add(player.name + ", we need to talk. Seems you have established a connection to another world. The realm of the starfarers have been connected with " + worldName + ". Now we have newer journeys through the stars, and newer threats to vanquish.");
+				if (!ThingSaid)
+				{
+					chat.Add(player.name + ", we need to talk. Seems you have established a connection to another world. The realm of the starfarers have been connected with " + worldName + ". Now we have newer journeys through the stars, and newer threats to vanquish.");
+					ThingSaid = true;
+				}
+				
 				EridaniBlessing = StarsAbove.Find<ModBuff>("EridaniBlessing");
 				AsphodeneBlessing = StarsAbove.Find<ModBuff>("AsphodeneBlessing");
+				EverlastingLight = StarsAbove.Find<ModBuff>("EverlastingLight");
 				//Saves it as a variable
 				if (player.HasBuff(EridaniBlessing.Type))
 				{
@@ -180,8 +199,45 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				{
 					chat.Add("Yes, Asphodene is another starfarer. So here's a little thing between you and me... I serve no connection with the starfarers, nor I have anything to do with them. I am a cosmonian, and we are different completely.");
 				}
+				if (player.HasBuff(EverlastingLight.Type))
+				{
+					chat.Add("Sheesh, this place is bright. I sense that you have a major problem heading your way... Good luck! Honestly, my brother Uther makes brighter lightshows than whatever this threat may be.");
+				}
+				if (player.HasBuff(StarsAbove.Find<ModBuff>("SurtrTwilight").Type))
+				{
+					chat.Add("Ars Laevateinn, what a nice way to name it after my sword. I can see that you have the infernal blade and you will make sure you will protect it.");
+				}
+				if (player.HasItem(StarsAbove.Find<ModItem>("MnemonicSigil").Type) && !TsukiyomiPreFightSaid)
+				{
+					if (!CalamitasPreFightSaid)
+					{
+						var EntitySource = NPC.GetSource_GiftOrReward();
+						player.QuickSpawnItem(EntitySource, ModContent.ItemType<Laevateinn>());
+						chat.Add("So you have found the source for all that trouble, huh? I am glad you have found it. I hope you will be able to stop it. Remember, Tsukiyomi is a tough one, rather brash and also persistent. I'd hope you will give her the disclipline that she needs. Here take Laevateinn, this can help you.", 100);
+					}
+					else
+					{
+						chat.Add("So you have found the source for all that trouble, huh? I am glad you have found it. I hope you will be able to stop it. Remember, Tsukiyomi is a tough one, rather brash and also persistent. I'd hope you will give her the disclipline that she needs. Use my sword like you have used on Calamitas, it will help a lot..", 100);
+					}
+					TsukiyomiPreFightSaid = true;
+				}
 			}
-			chat.Add("Chat isn't done yet, be patient.");
+			if (CalamitasInt >= 0 && Main.rand.NextBool(4))
+			{
+				chat.Add(Main.npc[CalamitasInt].GivenName + "'s flames are impressive indeed, the hellfire of the abyss should not be taken lightly. But my flames of the universe goes beyond. In other terms, I am much stronger, my flames burn hotter and brighter.");
+			}
+			if (FabInt >= 0 && Main.rand.NextBool(4))
+			{
+				chat.Add(Main.npc[FabInt].GivenName + "... as an empress, getting drunk often is not my cup of tea. Proper conduct is a must and therefore I never drink. If you are thinking of offering me a cup I may just ignite the alcohol within it and toss it into your face.");
+			}
+			if (PermafrostInt >= 0 && Main.rand.NextBool(4))
+			{
+				chat.Add("Hey, could you tell " + Main.npc[PermafrostInt].GivenName + " to stay away from me, I highly recommend 40 feet. Him getting near me may be way too warm for the archmage. Especially when I'm in combat when the air can skyrocket up to 7000 degrees kelvin.");
+
+			}
+			chat.Add("I'm Charlemagne, the Eternal Emberlight Empress hailing from the Teraverse Omneria. Say... I'd expect someone taller, but hey! It's a pleasure to work with you.");
+			chat.Add("Since enemies and foes are unable to fight me, I'll let you take the battle, that said, if you need help, I'll be there to give you information.");
+			chat.Add("I highly recommend not touching me... My body is around 2500 degrees and you will sear your entire face into oblivion if you do so.");
 			return chat;
 		}
 	}
