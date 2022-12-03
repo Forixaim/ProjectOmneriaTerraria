@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
+
 //Use tabs instead of spaces
 
 namespace ProjectOmneriaTerraria.NPCs.TownNPCs
@@ -22,12 +23,12 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		{
 			DisplayName.SetDefault("Eternal Emberlight Empress");
 			//Use Laevateinn to defend herself
-			Main.npcFrameCount[Type] = 25; // The amount of frames the NPC has
+			Main.npcFrameCount[Type] = 21; // The amount of frames the NPC has
 
 			NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs.
-			NPCID.Sets.AttackFrameCount[Type] = 4;
-			NPCID.Sets.DangerDetectRange[Type] = 700; // The amount of pixels away from the center of the npc that it tries to attack enemies.
-			NPCID.Sets.AttackType[Type] = 0;
+			NPCID.Sets.AttackFrameCount[Type] = 0;
+			NPCID.Sets.DangerDetectRange[Type] = 0; // The amount of pixels away from the center of the npc that it tries to attack enemies.
+            NPCID.Sets.AttackType[Type] = 0; // The type of attack the NPC does. 0 is a melee attack, 1 is a projectile attack, 2 is a magic attack, 3 is a summon attack, and 4 is a ranged attack.
 			NPCID.Sets.AttackTime[Type] = 90; // The amount of time it takes for the NPC's attack animation to be over once it starts.
 			NPCID.Sets.AttackAverageChance[Type] = 30;
 			NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
@@ -56,10 +57,25 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 1f;
-			AnimationType = NPCID.Guide;
+            NPC.stepSpeed = 2f;
+            AnimationType = NPCID.Guide;
 			NPC.immortal = true;
-		}
-		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
+            NPC.dontTakeDamage = true;
+            
+            if (!Main.dedServ)
+			{
+                Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno");
+            }
+        }
+
+        //AI
+        public override void AI()
+        {
+            //Always have the npc emit fire particles
+            Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, 6f, default, default, 2f);
+
+        }
+        public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 			if (NPC.downedBoss1)
 			{
@@ -74,6 +90,9 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				"Charlemagne"
 			};
 		}
+        
+        
+        
 		//Make Charlemagne use her Laevateinn to defend herself
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
 		{
