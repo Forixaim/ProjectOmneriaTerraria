@@ -31,11 +31,11 @@ namespace ProjectOmneriaTerraria.Items
 			Item.useTurn = true;
 			Item.crit = 100;
 			Item.scale = 1.5f;
-            Item.shoot = ProjectileType<Projectiles.LaevateinnProjectile>();
-            Item.shootSpeed = 2.1f;
-            Item.noMelee = true;
-            Item.noUseGraphic = true;
-        }
+			Item.shoot = ProjectileType<Projectiles.LaevateinnProjectile>();
+			Item.shootSpeed = 2.1f;
+			Item.noMelee = true;
+			Item.noUseGraphic = true;
+		}
 
 		public override void AddRecipes()
 		{

@@ -1,0 +1,6 @@
+#ignore the .vs folder
+.vs
+#Rider if necessary
+.idea
+#.vscode if necessary
+.vscode

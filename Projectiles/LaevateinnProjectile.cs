@@ -151,8 +151,8 @@ namespace ProjectOmneriaTerraria.Projectiles
                 //Deals triple damage to bosses
                 if (Calamitas != null && target.type == Calamitas.Type)
                 {
-                    //Deals 10000x damage to Calamitas
-                    target.StrikeNPC(damage * 10000, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
+                    //Deals 100x damage to Calamitas
+                    target.StrikeNPC(damage * 100, knockback, Projectile.velocity.X > 0 ? -1 : 1, crit);
                 }
                 else
                 {
