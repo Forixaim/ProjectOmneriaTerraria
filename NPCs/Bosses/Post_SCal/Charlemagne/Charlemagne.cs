@@ -72,6 +72,7 @@ namespace ProjectOmneriaTerraria.NPCs.Bosses.Post_SCal.Charlemagne
 		{
 			//Boss will use multiple ai[] values to determine time and actions
 			//Invunerable at the start of the fight, gives a bit of dialogue then begins, 
+			Player player = Main.player[NPC.target];
 			NPC.dontTakeDamage = true;
 			NPC.ai[0] += 1f;
 			NPC.ai[1] += 1f;
@@ -123,36 +124,37 @@ namespace ProjectOmneriaTerraria.NPCs.Bosses.Post_SCal.Charlemagne
 				Main.NewText("So, I'm going to give you about a minute to get ready, take your time.", 255, 0, 0);
 			}
 			//One minute has passed, begin the introduction message.
-			if (minutes == 1 && seconds == 0)
+			if (minutes == 1 && seconds == 0 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("I am Charlemagne, and welcome to the trial of the blaze.", 255, 0, 0);
 			}
 			//Every 5 seconds after the minute has passed
-			if (seconds == 5 && minutes == 1)
+			if (seconds == 5 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("I will be your opponent in this trial, and I will not hold back.", 255, 0, 0);
 			}
-			if (seconds == 10 && minutes == 1)
+			if (seconds == 10 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("Let's get a few rules up and running so we can make this a fair fight.", 255, 0, 0);
 			}
-			if (seconds == 15 && minutes == 1)
+			if (seconds == 15 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("First, you are prohibited from flying.", 255, 0, 0);
 			}
-			if (seconds == 20 && minutes == 1)
+			if (seconds == 20 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("Second, you are prohibited from using any form of projectile.", 255, 0, 0);
 			}
-			if (seconds == 25 && minutes == 1)
+			if (seconds == 25 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("Third, have fun.", 255, 0, 0);
 			}
-			if (seconds == 30 && minutes == 1)
+			if (seconds == 30 && minutes == 1 && NPC.ai[1] == 1f && hours == 0)
 			{
 				Main.NewText("Now, let's get started.", 255, 0, 0);
 			}
-			//Grab the local player
+			
+			//
 		}
 		public override void PostAI()
 		{

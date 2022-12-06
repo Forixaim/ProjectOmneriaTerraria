@@ -27,8 +27,6 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 	public class CosmonianCharlemagne : ModNPC
 	{
 		private World.WorldValues LocalWorldValues = ModContent.GetInstance<World.WorldValues>();
-		private static bool CalamitasFought = false;
-		private static bool ThingSaid = false;
 		public static Mod CalamityMod;
 		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
 		public static Mod StarsAbove;
@@ -187,12 +185,6 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 					}
 					LocalWorldValues.NPCCharlemagneThingSaid2 = true;
 				}
-				if ((bool)CalamityMod.Call("GetBossDowned", "supremecalamitas") && !CalamitasFought)
-				{
-					
-					chat.Add("You have defeated the witch, great work. I would like to personally speak to her as soon as I can. Who knows what we can get from each other.");
-					CalamitasFought = true;
-				}
 			}
 			//checks if a player has a buff
 			if (StarsAbove != null)
@@ -202,7 +194,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				if (!LocalWorldValues.NPCCharlemagneThingSaid)
 				{
 					chat.Add(player.name + ", we need to talk. Seems you have established a connection to another world. The realm of the starfarers have been connected with " + worldName + ". Now we have newer journeys through the stars, and newer threats to vanquish.");
-					ThingSaid = true;
+					LocalWorldValues.NPCCharlemagneThingSaid = true;
 				}
 				
 				EridaniBlessing = StarsAbove.Find<ModBuff>("EridaniBlessing");
