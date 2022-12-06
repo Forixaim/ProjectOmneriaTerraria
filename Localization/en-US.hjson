@@ -1,0 +1,18 @@
+Mods: {
+	ProjectOmneriaTerraria: {
+		TownNPCMood: {
+			CosmonianCharlemagne:{
+				Content: "Pretty cool here. Say, are you the person I asked for an audience?",
+				NoHome: "I'm fine without a home, but one is always appreciated.",
+				LoveSpace: "Rather quiet here, perfect for a secluded chat with you and me.",
+				FarFromHome: "Well, it's rather far from here. Could you take me home?",
+				DislikeCrowded: "People are people, but be aware. Too much people can be a compromise to privacy.",
+				HateCrowded: "There's too much people here, please try spacing them out better.",
+				LikeBiome: "{BiomeName} is a place for stargazers to enjoy. There are a lot of opportunities to enjoy the high floaty dreams of {BiomeName}.",
+				LoveBiome: "{BiomeName} feels like home, despite being rather lonely here it's fine as long as you are able to reach me regularly.",
+				DislikeBiome: "Say... {BiomeName} is rather cold... could you move me somewhere else? Thanks, somewhere hotter please.",
+				HateBiome: "The {BiomeName} is swampy and wet... Please I don't like this place."
+			}
+		}, 
+	}
+}

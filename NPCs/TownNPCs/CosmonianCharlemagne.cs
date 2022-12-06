@@ -1,13 +1,23 @@
 ﻿using System;
-using IL.Terraria.Localization;
-using ProjectOmneriaTerraria.Items;
-using System.Collections.Generic;
+using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
+using ProjectOmneriaTerraria.Biomes;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
+using Terraria.GameContent.Personalities;
+using Terraria.DataStructures;
+using System.Collections.Generic;
+using ReLogic.Content;
+using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
-
+using ProjectOmneriaTerraria.Items;
 
 //Use tabs instead of spaces
 
@@ -16,10 +26,9 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 	[AutoloadHead]
 	public class CosmonianCharlemagne : ModNPC
 	{
+		private World.WorldValues LocalWorldValues = ModContent.GetInstance<World.WorldValues>();
 		private static bool CalamitasFought = false;
 		private static bool ThingSaid = false;
-		private static bool CalamitasPreFightSaid = false;
-		private static bool TsukiyomiPreFightSaid = false;
 		public static Mod CalamityMod;
 		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
 		public static Mod StarsAbove;
@@ -48,6 +57,14 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 							  // Rotation = MathHelper.ToRadians(180) // You can also change the rotation of an NPC. Rotation is measured in radians
 							  // If you want to see an example of manually modifying these when the NPC is drawn, see PreDraw
 			};
+			//Happiness
+			//Loves to live in space or underworld
+			NPC.Happiness
+				.SetBiomeAffection<UnderworldBiome>(AffectionLevel.Love)
+				.SetBiomeAffection<SpaceBiome>(AffectionLevel.Like)
+				.SetBiomeAffection<JungleBiome>(AffectionLevel.Hate)
+				.SetBiomeAffection<SnowBiome>(AffectionLevel.Dislike)
+				;
 		}
 		
 		
@@ -58,22 +75,18 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.width = 18;
 			NPC.height = 40;
 			NPC.aiStyle = 7;
-			NPC.damage = Int32.MaxValue;
-			NPC.defense = Int32.MaxValue;
-			NPC.lifeMax = Int32.MaxValue;
+			NPC.damage = 1000000000;
+			NPC.defense = 250000;
+			NPC.lifeMax = 250000000;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 1f;
-			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
 			AnimationType = NPCID.Guide;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
-			
-			if (!Main.dedServ)
-			{
-				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno.ogg");
-			}
+			//Sounds.Music.CosmicInferno.ogg
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/CosmicInferno");
 		}
 
 		//AI
@@ -89,7 +102,16 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		{
 			return true;
 		}
-
+		
+		public override List<string> SetNPCNameList()
+		{
+			return new List<string>()
+			{
+				"Charlemagne"
+			};
+		}
+		
+		
 		//Make Charlemagne use her Laevateinn to defend herself
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
 		{
@@ -122,7 +144,8 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			ModBuff EridaniBlessing;
 			ModBuff AsphodeneBlessing;
 			ModBuff EverlastingLight;
-
+			
+			
 			if (Fargos != null)
 			{
 				Mutant = Fargos.Find<ModNPC>("Mutant");
@@ -148,24 +171,27 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				FabInt = NPC.FindFirstNPC(Fab.Type);
 				PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
 				//check if player has Ashes of Calamity
-				if (player.HasItem(CalamityMod.Find<ModItem>("AshesofCalamity").Type) && !CalamitasPreFightSaid)
+				if (player.HasItem(CalamityMod.Find<ModItem>("AshesofCalamity").Type) && !LocalWorldValues.NPCCharlemagneThingSaid2)
 				{
-					//Give the player Laevateinn
-					if (!TsukiyomiPreFightSaid)
+					//Give the player Laevateinn but check to see if they already have it and check if the other NPCCharlemagneThingSaid3 is false
+					
+					if (!LocalWorldValues.NPCCharlemagneThingSaid3)
 					{
 						var EntitySource = NPC.GetSource_GiftOrReward();
 						player.QuickSpawnItem(EntitySource, ModContent.ItemType<Laevateinn>());
+						chat.Add("Those ashes... I see. You are about to engage onto a tough fight against the witch. I wish you luck. Here's the only thing I can do, here I've forged you a replica of my blade. Despite being a replica, the blade is extremely powerful. The cosmic inferno will be extremely effective against her. Use it well.", 1000);
 					}
-					
-					chat.Add("Those ashes... I see. You are about to engage onto a tough fight against the witch. I wish you luck. Here's the only thing I can do, here I've forged you a replica of my blade. Despite being a replica, the blade is extremely powerful. The cosmic inferno will be extremely effective against her. Use it well.", 1000);
-					CalamitasPreFightSaid = true;
+					else
+					{
+						chat.Add("Those ashes... I see. You are about to engage onto a tough fight against the witch. I wish you luck. Use the blade I'd gave to you for your fight against Tsukiyomi, It's stronger against her.", 1000);
+					}
+					LocalWorldValues.NPCCharlemagneThingSaid2 = true;
 				}
 				if ((bool)CalamityMod.Call("GetBossDowned", "supremecalamitas") && !CalamitasFought)
 				{
 					
 					chat.Add("You have defeated the witch, great work. I would like to personally speak to her as soon as I can. Who knows what we can get from each other.");
 					CalamitasFought = true;
-
 				}
 			}
 			//checks if a player has a buff
@@ -173,7 +199,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			{
 				//Grab the world name
 				string worldName = Main.worldName;
-				if (!ThingSaid)
+				if (!LocalWorldValues.NPCCharlemagneThingSaid)
 				{
 					chat.Add(player.name + ", we need to talk. Seems you have established a connection to another world. The realm of the starfarers have been connected with " + worldName + ". Now we have newer journeys through the stars, and newer threats to vanquish.");
 					ThingSaid = true;
@@ -199,9 +225,9 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				{
 					chat.Add("Ars Laevateinn, what a nice way to name it after my sword. I can see that you have the infernal blade and you will make sure you will protect it.");
 				}
-				if (player.HasItem(StarsAbove.Find<ModItem>("MnemonicSigil").Type) && !TsukiyomiPreFightSaid)
+				if (player.HasItem(StarsAbove.Find<ModItem>("MnemonicSigil").Type) && !LocalWorldValues.NPCCharlemagneThingSaid3)
 				{
-					if (!CalamitasPreFightSaid)
+					if (!LocalWorldValues.NPCCharlemagneThingSaid2)
 					{
 						var EntitySource = NPC.GetSource_GiftOrReward();
 						player.QuickSpawnItem(EntitySource, ModContent.ItemType<Laevateinn>());
@@ -211,7 +237,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 					{
 						chat.Add("So you have found the source for all that trouble, huh? I am glad you have found it. I hope you will be able to stop it. Remember, Tsukiyomi is a tough one, rather brash and also persistent. I'd hope you will give her the disclipline that she needs. Use my sword like you have used on Calamitas, it will help a lot..", 100);
 					}
-					TsukiyomiPreFightSaid = true;
+					LocalWorldValues.NPCCharlemagneThingSaid3 = true;
 				}
 			}
 			if (CalamitasInt >= 0 && Main.rand.NextBool(4))
@@ -225,7 +251,27 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			if (PermafrostInt >= 0 && Main.rand.NextBool(4))
 			{
 				chat.Add("Hey, could you tell " + Main.npc[PermafrostInt].GivenName + " to stay away from me, I highly recommend 40 feet. Him getting near me may be way too warm for the archmage. Especially when I'm in combat when the air can skyrocket up to 7000 degrees kelvin.");
-
+			}
+			if (LocalWorldValues.CharleFought && LocalWorldValues.CharleDeaths == 1 && !LocalWorldValues.CharleDefeated)
+			{
+				chat.Add("Yep, that's one time you actually died to me. I am not surprised, I am the toughest opponent you will face in your life. I suggest you don't get too close to me, I may just burn you to a crisp.");
+			}
+			if (LocalWorldValues.CharleFought && LocalWorldValues.CharleDeaths == 2 && !LocalWorldValues.CharleDefeated)
+			{
+				chat.Add("You have died to me twice now. Did you learn what I just said previously? If so here's another tip, every strike i do inflicts Flaron Inferno, they drain your health by the percentage, so no amount of defense or damage reduction will help. The best tactic is to avoid me");
+			}
+			if (LocalWorldValues.CharleFought && LocalWorldValues.CharleDeaths == 3 && !LocalWorldValues.CharleDefeated)
+			{
+				chat.Add("To die 3 times to me, honestly you have the determination to come back. I can tell that with enough practice you will be able to land a hit.");
+			}
+			else if (LocalWorldValues.CharleFought && LocalWorldValues.CharleDeaths > 3 && !LocalWorldValues.CharleDefeated)
+			{
+				chat.Add("You have died to me " + LocalWorldValues.CharleDeaths + " times now. Practice makes perfect.");
+			}
+			if (LocalWorldValues.CharleDefeated && !LocalWorldValues.NPCCharlemagneThingSaid4)
+			{
+				chat.Add("Well, you landed your hit. Nice work. This test is over, and now I honestly don't have anything left for you to do. I hope you have a good day.", 100);
+				LocalWorldValues.NPCCharlemagneThingSaid4 = true;
 			}
 			chat.Add("I'm Charlemagne, the Eternal Emberlight Empress hailing from the Teraverse Omneria. Say... I'd expect someone taller, but hey! It's a pleasure to work with you.");
 			chat.Add("Since enemies and foes are unable to fight me, I'll let you take the battle, that said, if you need help, I'll be there to give you information.");
