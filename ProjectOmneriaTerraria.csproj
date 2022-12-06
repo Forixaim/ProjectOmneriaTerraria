@@ -12,5 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Buffs\Helpful\" />
+    <Folder Include="NPCs\Bosses\Hardmode\" />
+    <Folder Include="NPCs\Bosses\Post_ML\" />
+    <Folder Include="NPCs\Bosses\Pre_Hardmode\" />
   </ItemGroup>
 </Project>

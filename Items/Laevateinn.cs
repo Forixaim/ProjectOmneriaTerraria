@@ -6,12 +6,12 @@ using static Terraria.ModLoader.ModContent;
 
 namespace ProjectOmneriaTerraria.Items
 {
-	internal class Laevateinn : ModItem
+	public class Laevateinn : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Flare Blade Origin Laevateinn");
-			Tooltip.SetDefault("Charlemagne Halphas Flaron's personal sword, the blade of the supernova. Deals TRIPLE damage to bosses.");
+			Tooltip.SetDefault("A replica of Charlemagne Halphas Flaron's personal sword, the blade of the supernova. Deals TRIPLE damage to bosses. ");
 		}
 
 		public override void SetDefaults()

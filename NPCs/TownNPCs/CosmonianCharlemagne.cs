@@ -1,4 +1,5 @@
-﻿using IL.Terraria.Localization;
+﻿using System;
+using IL.Terraria.Localization;
 using ProjectOmneriaTerraria.Items;
 using System.Collections.Generic;
 using Terraria;
@@ -57,12 +58,13 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.width = 18;
 			NPC.height = 40;
 			NPC.aiStyle = 7;
-			NPC.damage = 1000000000;
-			NPC.defense = 250000;
-			NPC.lifeMax = 250000000;
+			NPC.damage = Int32.MaxValue;
+			NPC.defense = Int32.MaxValue;
+			NPC.lifeMax = Int32.MaxValue;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 1f;
+			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
 			AnimationType = NPCID.Guide;
 			NPC.immortal = true;
@@ -87,16 +89,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		{
 			return true;
 		}
-		
-		public override List<string> SetNPCNameList()
-		{
-			return new List<string>()
-			{
-				"Charlemagne"
-			};
-		}
-		
-		
+
 		//Make Charlemagne use her Laevateinn to defend herself
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
 		{
@@ -129,8 +122,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			ModBuff EridaniBlessing;
 			ModBuff AsphodeneBlessing;
 			ModBuff EverlastingLight;
-			
-			
+
 			if (Fargos != null)
 			{
 				Mutant = Fargos.Find<ModNPC>("Mutant");
