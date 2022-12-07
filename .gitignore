@@ -1,11 +1,9 @@
-﻿.vs
+﻿.vs/
 
-.vs/ProjectOmneriaTerraria
+.idea/
 
-.idea
+.vscode/
 
-.vscode
+v17/
 
-v17
-
-obj
+obj/
