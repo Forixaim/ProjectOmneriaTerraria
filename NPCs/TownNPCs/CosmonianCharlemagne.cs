@@ -27,12 +27,15 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 	public class CosmonianCharlemagne : ModNPC
 	{
 		private World.WorldValues LocalWorldValues = ModContent.GetInstance<World.WorldValues>();
-		public static Mod CalamityMod;
-		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
-		public static Mod StarsAbove;
-		public bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
-		public static Mod Fargos;
-		public bool FargosCheck = ModLoader.TryGetMod("Fargowiltas", out Fargos);
+		private static Mod CalamityMod;
+		private bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
+		private static Mod StarsAbove;
+		private bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
+		private static Mod Fargos;
+		private bool FargosCheck = ModLoader.TryGetMod("Fargowiltas", out Fargos);
+		private static ModNPC Tsuki = null;
+		private bool TsukiCheck = StarsAbove.TryFind<ModNPC>("Tsuki", out Tsuki);
+		private bool BossFightBegins;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eternal Emberlight Empress");
@@ -79,34 +82,30 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 1f;
+			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
 			AnimationType = NPCID.Guide;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
 			//Sounds.Music.CosmicInferno.ogg
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/CosmicInferno");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno.ogg");
 		}
 
-		//AI
+		//AI/
 		public override void AI()
 		{
 			//Always have the npc emit fire particles
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, -60f, default, default, 2f);
 			//
+			if (!NPC.HasGivenName)
+			{
+				NPC.GivenName = "Charlemagne";
+			}
 		}
-
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 			return true;
-		}
-		
-		public override List<string> SetNPCNameList()
-		{
-			return new List<string>()
-			{
-				"Charlemagne"
-			};
 		}
 		
 		
@@ -162,13 +161,13 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			if (CalamityMod != null)
 			{
 				//Saves it as a variable
-				Calamitas = CalamityMod.Find<ModNPC>("WITCH");
-				Fab = CalamityMod.Find<ModNPC>("FAP");
-				Permafrost = CalamityMod.Find<ModNPC>("DILF");
+				bool CalamitasCheck = CalamityMod.TryFind<ModNPC>("WITCH", out Calamitas);
+				bool FabCheck = CalamityMod.TryFind<ModNPC>("FAB", out Fab);
+				bool PermafrostCheck = CalamityMod.TryFind<ModNPC>("DILF", out Permafrost);
 				CalamitasInt = NPC.FindFirstNPC(Calamitas.Type);
 				FabInt = NPC.FindFirstNPC(Fab.Type);
 				PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
-				//check if player has Ashes of Calamity
+				//check if player has Ashes of Calamity/
 				if (player.HasItem(CalamityMod.Find<ModItem>("AshesofCalamity").Type) && !LocalWorldValues.NPCCharlemagneThingSaid2)
 				{
 					//Give the player Laevateinn but check to see if they already have it and check if the other NPCCharlemagneThingSaid3 is false
