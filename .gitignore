@@ -1,9 +1,9 @@
-﻿.vs/
+﻿/.vs/
 
-.idea/
+/.idea/
 
-.vscode/
+/.vscode/
 
-v17/
+/v17/
 
-obj/
+/obj/
