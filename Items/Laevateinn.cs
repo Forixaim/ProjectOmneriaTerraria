@@ -10,7 +10,7 @@ namespace ProjectOmneriaTerraria.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Flare Blade Origin Laevateinn");
+			DisplayName.SetDefault("Flare Blade Laevateinn");
 			Tooltip.SetDefault("A replica of Charlemagne Halphas Flaron's personal sword, the blade of the supernova. Deals TRIPLE damage to bosses. ");
 		}
 

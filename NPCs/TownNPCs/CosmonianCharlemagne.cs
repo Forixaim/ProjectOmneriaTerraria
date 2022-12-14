@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
@@ -19,34 +20,36 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 using ProjectOmneriaTerraria.Items;
 
-//Use tabs instead of spaces
-
 namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 {
 	[AutoloadHead]
 	public class CosmonianCharlemagne : ModNPC
-	{
+	{		
 		private World.WorldValues LocalWorldValues = ModContent.GetInstance<World.WorldValues>();
-		public static Mod CalamityMod;
-		public bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
-		public static Mod StarsAbove;
-		public bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
-		public static Mod Fargos;
-		public bool FargosCheck = ModLoader.TryGetMod("Fargowiltas", out Fargos);
+		private static Mod CalamityMod;
+		private bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
+		private static Mod StarsAbove;
+		private bool StarsAboveCheck = ModLoader.TryGetMod("StarsAbove", out StarsAbove);
+		private static Mod Fargos;
+		private bool FargosCheck = ModLoader.TryGetMod("Fargowiltas", out Fargos);
+		private static ModNPC Tsuki = null;
+		private bool TsukiCheck = StarsAbove.TryFind<ModNPC>("Tsuki", out Tsuki);
+		private bool BossFightBegins;
+		
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eternal Emberlight Empress");
 			//Use Laevateinn to defend herself
-			Main.npcFrameCount[Type] = 21; // The amount of frames the NPC has
-
+			Main.npcFrameCount[Type] = 25; // The amount of frames the NPC has
+			
 			NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs.
-			NPCID.Sets.AttackFrameCount[Type] = 0;
-			NPCID.Sets.DangerDetectRange[Type] = 0; // The amount of pixels away from the center of the npc that it tries to attack enemies.
+			NPCID.Sets.AttackFrameCount[Type] = 4;
+			NPCID.Sets.DangerDetectRange[Type] = 1000; // The amount of pixels away from the center of the npc that it tries to attack enemies.
 			NPCID.Sets.AttackType[Type] = 0; // The type of attack the NPC does. 0 is a melee attack, 1 is a projectile attack, 2 is a magic attack, 3 is a summon attack, and 4 is a ranged attack.
 			NPCID.Sets.AttackTime[Type] = 90; // The amount of time it takes for the NPC's attack animation to be over once it starts.
 			NPCID.Sets.AttackAverageChance[Type] = 30;
 			NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
-
+				
 			// Influences how the NPC looks in the Bestiary
 			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
 			{
@@ -79,38 +82,47 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 1f;
+			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
-			AnimationType = NPCID.Guide;
+			AnimationType = NPCID.DyeTrader;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
 			//Sounds.Music.CosmicInferno.ogg
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/CosmicInferno");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/cosmic-inferno.ogg");
 		}
 
-		//AI
+		//AI/
 		public override void AI()
 		{
 			//Always have the npc emit fire particles
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, -60f, default, default, 2f);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, 0f, default, default, 2f);
 			//
+			if (!NPC.HasGivenName)
+			{
+				NPC.GivenName = "Charlemagne";
+			}
+			
 		}
-
-
+		public override void DrawTownAttackSwing(ref Texture2D item, ref int itemSize, ref float scale, ref Vector2 offset)
+		{
+			//load the item before loading the texture
+			item = (Texture2D)TextureAssets.Item[ItemType<OriginLaevateinn>()];
+			itemSize = 1;
+			scale = 2f;
+			offset = new Vector2(0,0);
+		}
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 			return true;
 		}
-		
-		public override List<string> SetNPCNameList()
-		{
-			return new List<string>()
-			{
-				"Charlemagne"
-			};
-		}
-		
-		
+
 		//Make Charlemagne use her Laevateinn to defend herself
+		//Edit town npc attack strength
+		public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+		{
+			damage = 1000000000;
+			knockback = 1000000000;
+		}
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
 		{
 			itemWidth = 40;
@@ -162,13 +174,13 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			if (CalamityMod != null)
 			{
 				//Saves it as a variable
-				Calamitas = CalamityMod.Find<ModNPC>("WITCH");
-				Fab = CalamityMod.Find<ModNPC>("FAP");
-				Permafrost = CalamityMod.Find<ModNPC>("DILF");
+				bool CalamitasCheck = CalamityMod.TryFind<ModNPC>("WITCH", out Calamitas);
+				bool FabCheck = CalamityMod.TryFind<ModNPC>("FAB", out Fab);
+				bool PermafrostCheck = CalamityMod.TryFind<ModNPC>("DILF", out Permafrost);
 				CalamitasInt = NPC.FindFirstNPC(Calamitas.Type);
 				FabInt = NPC.FindFirstNPC(Fab.Type);
 				PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
-				//check if player has Ashes of Calamity
+				//check if player has Ashes of Calamity/
 				if (player.HasItem(CalamityMod.Find<ModItem>("AshesofCalamity").Type) && !LocalWorldValues.NPCCharlemagneThingSaid2)
 				{
 					//Give the player Laevateinn but check to see if they already have it and check if the other NPCCharlemagneThingSaid3 is false
