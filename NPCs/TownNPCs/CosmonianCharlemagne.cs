@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
@@ -19,13 +20,11 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 using ProjectOmneriaTerraria.Items;
 
-//Use tabs instead of spaces
-
 namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 {
 	[AutoloadHead]
 	public class CosmonianCharlemagne : ModNPC
-	{
+	{		
 		private World.WorldValues LocalWorldValues = ModContent.GetInstance<World.WorldValues>();
 		private static Mod CalamityMod;
 		private bool CalamityModCheck = ModLoader.TryGetMod("CalamityMod", out CalamityMod);
@@ -36,20 +35,21 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		private static ModNPC Tsuki = null;
 		private bool TsukiCheck = StarsAbove.TryFind<ModNPC>("Tsuki", out Tsuki);
 		private bool BossFightBegins;
+		
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eternal Emberlight Empress");
 			//Use Laevateinn to defend herself
-			Main.npcFrameCount[Type] = 21; // The amount of frames the NPC has
-
+			Main.npcFrameCount[Type] = 25; // The amount of frames the NPC has
+			
 			NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs.
-			NPCID.Sets.AttackFrameCount[Type] = 0;
-			NPCID.Sets.DangerDetectRange[Type] = 0; // The amount of pixels away from the center of the npc that it tries to attack enemies.
+			NPCID.Sets.AttackFrameCount[Type] = 4;
+			NPCID.Sets.DangerDetectRange[Type] = 1000; // The amount of pixels away from the center of the npc that it tries to attack enemies.
 			NPCID.Sets.AttackType[Type] = 0; // The type of attack the NPC does. 0 is a melee attack, 1 is a projectile attack, 2 is a magic attack, 3 is a summon attack, and 4 is a ranged attack.
 			NPCID.Sets.AttackTime[Type] = 90; // The amount of time it takes for the NPC's attack animation to be over once it starts.
 			NPCID.Sets.AttackAverageChance[Type] = 30;
 			NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
-
+				
 			// Influences how the NPC looks in the Bestiary
 			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
 			{
@@ -84,7 +84,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.knockBackResist = 1f;
 			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
-			AnimationType = NPCID.Guide;
+			AnimationType = NPCID.DyeTrader;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
 			//Sounds.Music.CosmicInferno.ogg
@@ -95,21 +95,34 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		public override void AI()
 		{
 			//Always have the npc emit fire particles
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, -60f, default, default, 2f);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, 0f, default, default, 2f);
 			//
 			if (!NPC.HasGivenName)
 			{
 				NPC.GivenName = "Charlemagne";
 			}
+			
 		}
-
+		public override void DrawTownAttackSwing(ref Texture2D item, ref int itemSize, ref float scale, ref Vector2 offset)
+		{
+			//load the item before loading the texture
+			item = (Texture2D)TextureAssets.Item[ItemType<OriginLaevateinn>()];
+			itemSize = 1;
+			scale = 2f;
+			offset = new Vector2(0,0);
+		}
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 			return true;
 		}
-		
-		
+
 		//Make Charlemagne use her Laevateinn to defend herself
+		//Edit town npc attack strength
+		public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+		{
+			damage = 1000000000;
+			knockback = 1000000000;
+		}
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
 		{
 			itemWidth = 40;
