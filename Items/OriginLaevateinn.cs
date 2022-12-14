@@ -15,7 +15,7 @@ namespace ProjectOmneriaTerraria.Items
 		}
 		public override void SetDefaults()
 		{
-			Item.damage = Int32.MaxValue/2;
+			Item.damage = Int32.MaxValue/100;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 40;
 			Item.height = 40;
@@ -29,7 +29,6 @@ namespace ProjectOmneriaTerraria.Items
 			Item.autoReuse = true;
 			Item.useTurn = true;
 			Item.crit = 100;
-			Item.scale = 0.5f;
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
