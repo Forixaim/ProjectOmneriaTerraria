@@ -45,7 +45,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			
 			NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs.
 			NPCID.Sets.AttackFrameCount[Type] = 4;
-			NPCID.Sets.DangerDetectRange[Type] = 1000; // The amount of pixels away from the center of the npc that it tries to attack enemies.
+			NPCID.Sets.DangerDetectRange[Type] = 100; // The amount of pixels away from the center of the npc that it tries to attack enemies.
 			NPCID.Sets.AttackType[Type] = 3; // The type of attack the NPC does. 0 is a melee attack, 1 is a projectile attack, 2 is a magic attack, 3 is a summon attack, and 4 is a ranged attack.
 			NPCID.Sets.AttackTime[Type] = 10; // The amount of time it takes for the NPC's attack animation to be over once it starts.
 			NPCID.Sets.AttackAverageChance[Type] = 100;
@@ -89,18 +89,18 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
 		}
-
 		//AI/
 		public override void AI()
 		{
-			//Always have the npc emit fire particles
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Torch, 0f, 0f, default, default, 2f);
+			//Always have the npc emit some form of light
+			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 5f);
 			//
 			if (!NPC.HasGivenName)
 			{
 				NPC.GivenName = "Charlemagne";
 			}
-			
+			//check the NPCID.sets.DangerDetectRange
+			//override the code that makes the NPC run away from hostile NPCs
 		}
 		//Edit the weapon swung
 		public override void DrawTownAttackSwing(ref Texture2D item, ref int itemSize, ref float scale, ref Vector2 offset)
