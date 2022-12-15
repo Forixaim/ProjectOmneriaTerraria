@@ -16,17 +16,16 @@ namespace ProjectOmneriaTerraria.Projectiles
 		{
 			Projectile.width = 40;
 			Projectile.height = 40;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Boomerang;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
-			Projectile.penetrate = 2; //Can hit multiple enemies
+			Projectile.penetrate = 100; //Can hit multiple enemies
 			Projectile.timeLeft = 600;
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
 			Projectile.extraUpdates = 1;
 			Projectile.scale = 1f;
-			//Set the Projectile damage to be 3x the damage of the NPC's attack
-			Projectile.damage = (int)(Main.npc[Projectile.owner].damage * 1.5f);
+			AIType = ProjectileID.WoodenBoomerang;
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 10;
 			

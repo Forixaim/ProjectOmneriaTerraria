@@ -15,6 +15,17 @@ Mods: {
 				LikeNPC_Princess: "{NPCName} is a young little prodigy. There's so much things I can teach her! Hey, tell her to come to me when she's ready to learn. We may start on a little round of swordfighting!",
 				
 			}
+			CosmonianKalish: {
+				Content: "As an emperor, it feels nominal here. If you want some advice feel free to come.",
+				NoHome: "Staying on the move probably isn't the greatest idea, we should set up camp.",
+				FarFromHome: "It's a little far, but a little exploring and adventuring is fine.",
+				LoveSpace: "Peacefulness and seculsion is perfect for me to do my business without interruption.",
+				DislikeCrowded: "There are a lot of people here, things can get bad.",
+				HateCrowded: "My peacefulness is always being interrupted by crowds, not my cup of tea.",
+				LikeBiome: "The snowy landscape always reminds me of the cold soft days of the core planet of Eridanus.",
+				LoveBiome: "Space is perfect for me, reminds me of Eridanus and therefore helps me to focus fully.",
+				LikeNPC_Princess: "{NPCName} is rather adorable, mortals like her tend to be praised by everyone. Take care of her well and raise her to a new queen.",
+			}
 		}, 
 	}
 }

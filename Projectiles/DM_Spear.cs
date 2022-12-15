@@ -18,21 +18,22 @@ namespace ProjectOmneriaTerraria.Projectiles
 			Projectile.aiStyle = 1;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
-			Projectile.penetrate = 1; //Can only hit 1 enemy but hits extremely hard and flies fast
+			Projectile.penetrate = 5; //Can only hit 1 enemy but hits extremely hard and flies fast
 			Projectile.timeLeft = 600;
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
 			Projectile.extraUpdates = 1;
-			//Set the Projectile damage to be 3x the damage of the NPC's attack
-			Projectile.damage = (int)(Main.npc[Projectile.owner].damage * 1.5f);
+			AIType = ProjectileID.Bullet;
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 10;
 		}
+		//Fix the spear's rotation
 
 		public override void AI()
 		{
 			//Emit shadowflame dust
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame);
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection;
 		}
 		//When the projectile is killed, leave an explosion
 		public override void Kill(int timeLeft)

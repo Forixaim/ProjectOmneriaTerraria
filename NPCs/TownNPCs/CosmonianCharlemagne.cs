@@ -1,32 +1,22 @@
-﻿using System;
-using System.Linq;
-using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria.Localization;
-using ProjectOmneriaTerraria.Biomes;
-using Terraria.ModLoader;
-using Terraria.Utilities;
-using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectOmneriaTerraria.Biomes;
+using ProjectOmneriaTerraria.Items;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
-using Terraria.DataStructures;
-using System.Collections.Generic;
-using ReLogic.Content;
-using Terraria.ModLoader.IO;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
-using ProjectOmneriaTerraria.Items;
 
 namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 {
-	
+
 	[AutoloadHead]
 	public class CosmonianCharlemagne : ModNPC
-	{		
-		
+	{
+
 		private World.WorldValues _localWorldValues = ModContent.GetInstance<World.WorldValues>();
 		private static Mod _calamityMod;
 		private bool _calamityModCheck = ModLoader.TryGetMod("CalamityMod", out _calamityMod);
@@ -34,15 +24,14 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		private bool _starsAboveCheck = ModLoader.TryGetMod("StarsAbove", out _starsAbove);
 		private static Mod _fargos;
 		private bool _fargosCheck = ModLoader.TryGetMod("Fargowiltas", out _fargos);
-		private bool BossFightBegins;
 
-		
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eternal Emberlight Empress");
 			//Use Laevateinn to defend herself
 			Main.npcFrameCount[Type] = 25; // The amount of frames the NPC has
-			
+
 			NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs.
 			NPCID.Sets.AttackFrameCount[Type] = 4;
 			NPCID.Sets.DangerDetectRange[Type] = 100; // The amount of pixels away from the center of the npc that it tries to attack enemies.
@@ -50,7 +39,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPCID.Sets.AttackTime[Type] = 10; // The amount of time it takes for the NPC's attack animation to be over once it starts.
 			NPCID.Sets.AttackAverageChance[Type] = 100;
 			NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
-				
+
 			// Influences how the NPC looks in the Bestiary
 			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
 			{
@@ -68,8 +57,8 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				.SetBiomeAffection<SnowBiome>(AffectionLevel.Dislike)
 				;
 		}
-		
-		
+
+
 		public override void SetDefaults()
 		{
 			NPC.townNPC = true;
@@ -95,9 +84,9 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			//Always have the npc emit some form of light
 			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 5f);
 			//
-			if (!NPC.HasGivenName)
+			if (!NPC.HasGivenName || NPC.GivenName != "Charlemagne Halphas Flaron")
 			{
-				NPC.GivenName = "Charlemagne";
+				NPC.GivenName = "Charlemagne Halphas Flaron";
 			}
 			//check the NPCID.sets.DangerDetectRange
 			//override the code that makes the NPC run away from hostile NPCs
@@ -110,7 +99,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			item = TextureAssets.Item[ItemType<OriginLaevateinn>()].Value;
 			itemSize = 40;
 			scale = 1f;
-			
+
 		}
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
@@ -209,7 +198,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			}
 			//Modded bosses
 			//Calamity
-			
+
 			if (_calamityModCheck)
 			{
 				//If Desert Scourge is defeated, increase damage by 5%
@@ -226,7 +215,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 
 				//If Perforator or Hive Mind is defeated, increase damage by 10%
 				if ((bool)_calamityMod.Call("GetBossDowned", "perforator") ||
-				    (bool)_calamityMod.Call("GetBossDowned", "hivemind"))
+					(bool)_calamityMod.Call("GetBossDowned", "hivemind"))
 				{
 					damageModifier += 0.1f;
 				}
@@ -267,20 +256,23 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				{
 					damageModifier += 0.5f;
 				}
+
 				//If Ravager is defeated, increase damage by 100%
 				if ((bool)_calamityMod.Call("GetBossDowned", "ravager"))
 				{
 					damageModifier += 1f;
 				}
+
 				//If Plaguebringer Goliath is defeated, increase damage by 100%
 				if ((bool)_calamityMod.Call("GetBossDowned", "plaguebringergoliath"))
 				{
 					damageModifier += 1f;
 				}
+
 			}
 
 			//Temporarily casts the damage to a float, multiplies it by the damage modifier, then casts it back to an int
-			damage = (int)((float)damage * damageModifier);
+			damage = (int)(damage * damageModifier);
 			knockback = 0f;
 		}
 		public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight)
@@ -314,8 +306,8 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			ModBuff EridaniBlessing;
 			ModBuff AsphodeneBlessing;
 			ModBuff EverlastingLight;
-			
-			
+
+
 			if (_fargosCheck)
 			{
 				Mutant = _fargos.Find<ModNPC>("Mutant");
@@ -344,7 +336,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				if (player.HasItem(_calamityMod.Find<ModItem>("AshesofCalamity").Type) && !_localWorldValues.NPCCharlemagneThingSaid2)
 				{
 					//Give the player Laevateinn but check to see if they already have it and check if the other NPCCharlemagneThingSaid3 is false
-					
+
 					if (!_localWorldValues.NPCCharlemagneThingSaid3)
 					{
 						var EntitySource = NPC.GetSource_GiftOrReward();
@@ -357,7 +349,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 					}
 					_localWorldValues.NPCCharlemagneThingSaid2 = true;
 				}
-				
+
 			}
 			//checks if a player has a buff
 			if (_starsAboveCheck)
@@ -369,7 +361,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 					chat.Add(player.name + ", we need to talk. Seems you have established a connection to another world. The realm of the starfarers have been connected with " + worldName + ". Now we have newer journeys through the stars, and newer threats to vanquish.");
 					_localWorldValues.NPCCharlemagneThingSaid = true;
 				}
-				
+
 				EridaniBlessing = _starsAbove.Find<ModBuff>("EridaniBlessing");
 				AsphodeneBlessing = _starsAbove.Find<ModBuff>("AsphodeneBlessing");
 				EverlastingLight = _starsAbove.Find<ModBuff>("EverlastingLight");
@@ -439,7 +431,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				_localWorldValues.NPCCharlemagneThingSaid4 = true;
 			}
 			//If a party is active.
-			
+
 			chat.Add("I'm Charlemagne, the Eternal Emberlight Empress hailing from the Teraverse Omneria. Say... I'd expect someone taller, but hey! It's a pleasure to work with you.");
 			chat.Add("Since enemies and foes are unable to fight me, I'll let you take the battle, that said, if you need help, I'll be there to give you information.");
 			chat.Add("I highly recommend not touching me... My body is around 2500 degrees and you will sear your entire face into oblivion if you do so.");

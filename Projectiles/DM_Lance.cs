@@ -23,13 +23,14 @@ namespace ProjectOmneriaTerraria.Projectiles
 			Projectile.aiStyle = 1;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
-			Projectile.penetrate = 4;
+			Projectile.penetrate = 15;
 			Projectile.timeLeft = 600;
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
+			//Disable gravity
+			AIType = ProjectileID.Bullet;
 			Projectile.extraUpdates = 1;
 			//Set the Projectile damage to be 1.5x the damage of the NPC's attack
-			Projectile.damage = (int)(Main.npc[Projectile.owner].damage * 1.5f);
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 10;
 		}
@@ -37,7 +38,8 @@ namespace ProjectOmneriaTerraria.Projectiles
 		public override void AI()
 		{
 			//Check if the projectile hits an enemy
-
+			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame);
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection;
 		}
 
 
