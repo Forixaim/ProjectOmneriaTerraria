@@ -66,7 +66,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.width = 18;
 			NPC.height = 40;
 			NPC.aiStyle = 7;
-			NPC.damage = 250;
+			NPC.damage = 25;
 			NPC.defense = 250;
 			NPC.lifeMax = 25000;
 			NPC.HitSound = SoundID.NPCHit1;
