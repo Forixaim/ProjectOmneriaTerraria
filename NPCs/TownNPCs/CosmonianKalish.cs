@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Mono.Cecil;
 using ProjectOmneriaTerraria.Biomes;
+using ProjectOmneriaTerraria.Projectiles;
+using System;
 using Terraria;
 using Terraria.GameContent.Personalities;
 using Terraria.ID;
@@ -40,7 +43,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.height = 42;
 			NPC.width = 18;
 			NPC.aiStyle = 7;
-			NPC.damage = 250;
+			NPC.damage = 25;
 			NPC.defense = 100;
 			NPC.lifeMax = 10000;
 			NPC.HitSound = SoundID.NPCHit1;
@@ -65,13 +68,29 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			{
 				NPC.GivenName = "Kalish Alexander Eridanus";
 			}
+			
+			//Look for the nearest hostile npc
+			//CheckForHostiles();
 		}
-
+		
 		//Shoots a variety of Dark Matter Weapons (randomly chosen list: Spear, Lance, and Sword)
 		public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 		{
 			//Random number between 0 and 2
-			projType = ModContent.ProjectileType<Projectiles.DM_Spear>();
+			//Kept as a 8bit number for memory efficiency
+			byte random = (byte)Main.rand.Next(3);
+			if (random == 0)
+			{
+				projType = ModContent.ProjectileType<DM_Spear>();
+			}
+			else if (random == 1)
+			{
+				projType = ModContent.ProjectileType<DM_Lance>();
+			}
+			else if (random == 2)
+			{
+				projType = ModContent.ProjectileType<DM_Sword>();
+			}
 			attackDelay = 1;
 		}
 
@@ -261,7 +280,64 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
+			//Spawns initially in hardmode
 			return Main.hardMode;
+		}
+
+		//a few private methods to help with the code
+		private void CheckForHostiles()
+		{
+			//check for hostiles nearby
+			//First a scanning distance is set
+			int scanDistance = NPCID.Sets.DangerDetectRange[Type];
+			//Then a rectangle is created with the scanning distance
+			Rectangle scanArea = new Rectangle((int)NPC.position.X - scanDistance, (int)NPC.position.Y - scanDistance, NPC.width + scanDistance * 2, NPC.height + scanDistance * 2);
+			//Check if any NPCs are in the scan area
+			for (int i = 0; i < Main.maxNPCs; i++)
+			{
+				//If the NPC is hostile and is in the scan area, set _hostile to true
+				if (Main.npc[i].active && !(Main.npc[i].friendly) && Main.npc[i].type != NPCID.TargetDummy && scanArea.Intersects(Main.npc[i].Hitbox) && !(Main.npc[i].CountsAsACritter))
+				{
+					//walk towards the hostile NPC
+					NPC.velocity = NPC.DirectionTo(Main.npc[i].Center) * 2f;
+					//When the NPC is close enough, fire a Dark Matter Spear
+					if (NPC.Distance(Main.npc[i].Center) < 100f)
+					{
+						//Set the projectile to Dark Matter Spear
+						_projectile = 0;
+						NPC.target = Main.npc[i].whoAmI;
+						//Fire the projectile
+						ShootProjectile(Main.npc[i]);
+					}
+				}
+			}
+		}
+		
+		private void ShootProjectile(NPC TargetNPC)
+		{
+			//Create initial variables
+			var entitySource = NPC.GetSource_FromAI();
+			
+			//First a random number is generated from 0 to 2
+			int random = Main.rand.Next(3);
+			
+			//A if statement because a switch case doesn't work
+			if (random == 0)
+			{
+				//If the random number is 0, set the projectile to Dark Matter Spear
+				_projectile = ModContent.ProjectileType<DM_Spear>();
+			}
+			else if (random == 1)
+			{
+
+				_projectile = ModContent.ProjectileType<DM_Lance>();
+			}
+			else
+			{
+				_projectile = ModContent.ProjectileType<DM_Sword>();
+			}
+			//Then the projectile is fired
+			Projectile.NewProjectile(entitySource, NPC.Center, NPC.DirectionTo(TargetNPC.Center) * 10f, _projectile, NPC.damage, NPC.type);
 		}
 
 		public override string GetChat()

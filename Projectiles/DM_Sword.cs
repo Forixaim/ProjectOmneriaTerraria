@@ -25,9 +25,9 @@ namespace ProjectOmneriaTerraria.Projectiles
 			Projectile.tileCollide = false;
 			Projectile.extraUpdates = 1;
 			Projectile.scale = 1f;
-			AIType = ProjectileID.WoodenBoomerang;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 10;
+			AIType = ProjectileID.MechanicWrench;
+			Projectile.usesLocalNPCImmunity = false;
+			Projectile.localNPCHitCooldown = 0;
 			
 		}
 		//Unlike the previous projectiles, the Dark Matter Sword spins while it flies

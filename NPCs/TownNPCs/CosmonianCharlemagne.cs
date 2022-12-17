@@ -37,7 +37,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPCID.Sets.DangerDetectRange[Type] = 100; // The amount of pixels away from the center of the npc that it tries to attack enemies.
 			NPCID.Sets.AttackType[Type] = 3; // The type of attack the NPC does. 0 is a melee attack, 1 is a projectile attack, 2 is a magic attack, 3 is a summon attack, and 4 is a ranged attack.
 			NPCID.Sets.AttackTime[Type] = 10; // The amount of time it takes for the NPC's attack animation to be over once it starts.
-			NPCID.Sets.AttackAverageChance[Type] = 100;
+			NPCID.Sets.AttackAverageChance[Type] = 10000;
 			NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
 
 			// Influences how the NPC looks in the Bestiary
@@ -66,7 +66,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.width = 18;
 			NPC.height = 40;
 			NPC.aiStyle = 7;
-			NPC.damage = 250;
+			NPC.damage = 25;
 			NPC.defense = 250;
 			NPC.lifeMax = 25000;
 			NPC.HitSound = SoundID.NPCHit1;
@@ -75,7 +75,6 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			NPC.GivenName = "Charlemagne";
 			NPC.stepSpeed = 2f;
 			AnimationType = NPCID.DyeTrader;
-			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
 		}
 		//AI/
@@ -141,10 +140,11 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			{
 				damageModifier += 0.1f;
 			}
-			//If the world is in hardmode, increase damage by 100%
+			//If the world is in hardmode, increase damage by 100% and set base damage to 100
 			if (Main.hardMode)
 			{
 				damageModifier += 1f;
+				damage = 100;
 			}
 			//If one of the mech bosses is defeated, increase damage by 50%
 			if (NPC.downedMechBoss1 || NPC.downedMechBoss2 || NPC.downedMechBoss3)
@@ -282,8 +282,8 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 		}
 		public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
 		{
-			cooldown = 1;
-			randExtraCooldown = 1;
+			cooldown = 0;
+			randExtraCooldown = 0;
 		}
 
 		//Dialogue from en-US.json
