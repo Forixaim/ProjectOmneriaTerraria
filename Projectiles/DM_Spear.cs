@@ -24,8 +24,8 @@ namespace ProjectOmneriaTerraria.Projectiles
 			Projectile.tileCollide = false;
 			Projectile.extraUpdates = 1;
 			AIType = ProjectileID.Bullet;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 10;
+			Projectile.usesLocalNPCImmunity = false;
+			Projectile.localNPCHitCooldown = 0;
 		}
 		//Fix the spear's rotation
 

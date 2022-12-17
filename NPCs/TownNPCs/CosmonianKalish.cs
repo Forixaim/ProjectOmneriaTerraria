@@ -68,16 +68,17 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 			{
 				NPC.GivenName = "Kalish Alexander Eridanus";
 			}
+			
 			//Look for the nearest hostile npc
 			//CheckForHostiles();
 		}
-
+		
 		//Shoots a variety of Dark Matter Weapons (randomly chosen list: Spear, Lance, and Sword)
 		public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 		{
 			//Random number between 0 and 2
-			//Kept as a short number for memory efficiency
-			UInt16 random = (UInt16)Main.rand.Next(3);
+			//Kept as a 8bit number for memory efficiency
+			byte random = (byte)Main.rand.Next(3);
 			if (random == 0)
 			{
 				projType = ModContent.ProjectileType<DM_Spear>();

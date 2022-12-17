@@ -31,8 +31,8 @@ namespace ProjectOmneriaTerraria.Projectiles
 			AIType = ProjectileID.Bullet;
 			Projectile.extraUpdates = 1;
 			//Set the Projectile damage to be 1.5x the damage of the NPC's attack
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 10;
+			Projectile.usesLocalNPCImmunity = false;
+			Projectile.localNPCHitCooldown = 0;
 		}
 
 		public override void AI()
