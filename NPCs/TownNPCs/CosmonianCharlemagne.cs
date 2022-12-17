@@ -310,18 +310,18 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 
 			if (_fargosCheck)
 			{
-				Mutant = _fargos.Find<ModNPC>("Mutant");
-				Deviantt = _fargos.Find<ModNPC>("Deviantt");
-				MutantInt = NPC.FindFirstNPC(Mutant.Type);
-				DevianttInt = NPC.FindFirstNPC(Deviantt.Type);
-				if (MutantInt >= 0 && Main.rand.NextBool(4))
+				bool mutantCheck = _fargos.TryFind<ModNPC>("Mutant", out Mutant);
+				bool devianttCheck = _fargos.TryFind<ModNPC>("Deviantt", out Deviantt);
+				if (mutantCheck)
 				{
-					chat.Add("Remember, do not take " + Main.npc[MutantInt].GivenName + " lightly. He is extremely powerful. Sure I can beat him without lifting a finger but this is your test. I can not help you cheat.");
+					MutantInt = NPC.FindFirstNPC(Mutant.Type);
 				}
-				if (DevianttInt >= 0 && Main.rand.NextBool(4))
+				if (devianttCheck)
 				{
-					chat.Add(Main.npc[DevianttInt].GivenName + " the Deviantt, can be useful, if you want to spar with her go ahead. Don't get me involved in this.");
+					DevianttInt = NPC.FindFirstNPC(Deviantt.Type);
 				}
+				
+				
 			}
 			if (_calamityModCheck)
 			{
@@ -329,9 +329,21 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				bool CalamitasCheck = _calamityMod.TryFind<ModNPC>("WITCH", out Calamitas);
 				bool FabCheck = _calamityMod.TryFind<ModNPC>("FAB", out Fab);
 				bool PermafrostCheck = _calamityMod.TryFind<ModNPC>("DILF", out Permafrost);
-				CalamitasInt = NPC.FindFirstNPC(Calamitas.Type);
-				FabInt = NPC.FindFirstNPC(Fab.Type);
-				PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
+				if (CalamitasCheck)
+				{
+					CalamitasInt = NPC.FindFirstNPC(Calamitas.Type);
+				}
+
+				if (FabCheck)
+				{
+					FabInt = NPC.FindFirstNPC(Fab.Type);
+				}
+
+				if (PermafrostCheck)
+				{
+					PermafrostInt = NPC.FindFirstNPC(Permafrost.Type);
+				}
+
 				//check if player has Ashes of Calamity/
 				if (player.HasItem(_calamityMod.Find<ModItem>("AshesofCalamity").Type) && !_localWorldValues.NPCCharlemagneThingSaid2)
 				{
@@ -396,6 +408,14 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 					}
 					_localWorldValues.NPCCharlemagneThingSaid3 = true;
 				}
+			}
+			if (MutantInt >= 0)
+			{
+				chat.Add("Remember, do not take " + Main.npc[MutantInt].GivenName + " lightly. He is extremely powerful. Sure I can beat him without lifting a finger but this is your test. I can not help you cheat.");
+			}
+			if (DevianttInt >= 0)
+			{
+				chat.Add(Main.npc[DevianttInt].GivenName + " the Deviantt, can be useful, if you want to spar with her go ahead. Don't get me involved in this.");
 			}
 			if (CalamitasInt >= 0)
 			{

@@ -290,7 +290,7 @@ namespace ProjectOmneriaTerraria.NPCs.TownNPCs
 				chat.Add("Sigh... truth to be told, I truly didn't mean that those three would come. I would ask you to not drag me into a fight with their summons.");
 				if (NPC.FindFirstNPC(_fargos.Find<ModNPC>("Mutant").Type) >= 0)
 				{
-					chat.Add("Mortal, would you ask " + Main.npc[NPC.FindFirstNPC((_fargos.Find<ModNPC>("Mutant").Type))] + " to come talk to me, he has pissed me off way too many times on how he keeps ripping me off and overpricing the things I gave to him.");
+					chat.Add("Mortal, would you ask " + Main.npc[NPC.FindFirstNPC((_fargos.Find<ModNPC>("Mutant").Type))].GivenName + " to come talk to me, he has pissed me off way too many times on how he keeps ripping me off and overpricing the things I gave to him.");
 				}
 			}
 
